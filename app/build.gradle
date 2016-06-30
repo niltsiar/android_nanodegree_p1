@@ -1,3 +1,6 @@
+import org.ajoberstar.grgit.Grgit
+import org.eclipse.jgit.errors.RepositoryNotFoundException
+
 buildscript {
     ext.versions = [
             apt              : '1.8',
@@ -36,6 +39,15 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'com.getkeepsafe.dexcount'
 
+//Version information
+def versionMajor = 0
+def versionMinor = 0
+def versionPatch = 1
+def versionRevision = getRevision();
+
+def appVersionCode = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100
+def appVersionName = "${versionMajor}.${versionMinor}.${versionPatch}"
+
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.0"
@@ -44,8 +56,10 @@ android {
         applicationId "eu.bquepab.popularmovies"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+        versionCode appVersionCode
+        versionName appVersionName
+
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -91,6 +105,27 @@ dependencies {
     apt "com.ryanharter.auto.value:auto-value-moshi:${versions.auto_value_moshi}"
     apt "com.ryanharter.auto.value:auto-value-parcel:${versions.auto_value_parcel}"
     apt "com.jakewharton:butterknife-compiler:${versions.butterknife}"
+}
+
+android.applicationVariants.all { variant ->
+    if (variant.buildType.name == "debug") {
+        variant.mergedFlavor.versionName += "-${versionRevision}"
+    }
+}
+
+def getRevision() {
+    def revision
+    try {
+        revision = getGitRevision()
+    } catch (RepositoryNotFoundException e) {
+        revision = 0
+    }
+    return revision
+}
+
+def getGitRevision() {
+    def git = Grgit.open(dir: '.')
+    return git.head().abbreviatedId
 }
 
 //Configuration for gradle-versions-plugin to avoid non-release versions
