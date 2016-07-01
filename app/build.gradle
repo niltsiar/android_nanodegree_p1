@@ -60,6 +60,10 @@ android {
         versionName appVersionName
 
         vectorDrawables.useSupportLibrary = true
+
+        buildConfigField "String", "THE_MOVIE_DATABASE_API_KEY", THE_MOVIE_DATABASE_API_KEY
+        buildConfigField "String", "THE_MOVE_DATABASE_API_URL", '"https://api.themoviedb.org/3/"'
+        buildConfigField "String", "THE_MOVIE_DATABASE_IMAGE_URL", '"https://image.tmdb.org/t/p/w185"'
     }
     buildTypes {
         release {
