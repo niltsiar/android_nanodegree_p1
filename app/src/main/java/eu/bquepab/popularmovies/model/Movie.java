@@ -5,6 +5,7 @@ import com.google.auto.value.AutoValue;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
+import eu.bquepab.popularmovies.BuildConfig;
 
 @AutoValue
 public abstract class Movie implements Parcelable {
@@ -18,7 +19,7 @@ public abstract class Movie implements Parcelable {
     public abstract String title();
 
     @Json(name = "poster_path")
-    public abstract String posterThumbnailUrl();
+    public abstract String posterPath();
 
     @Json(name = "overview")
     public abstract String synopsis();
@@ -28,4 +29,8 @@ public abstract class Movie implements Parcelable {
 
     @Json(name = "release_date")
     public abstract String releaseDate();
+
+    public String posterUrl() {
+        return BuildConfig.THE_MOVIE_DATABASE_IMAGE_URL + posterPath();
+    }
 }

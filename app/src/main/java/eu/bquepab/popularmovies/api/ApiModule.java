@@ -1,7 +1,10 @@
 package eu.bquepab.popularmovies.api;
 
+import android.content.Context;
+import com.jakewharton.picasso.OkHttp3Downloader;
 import com.ryanharter.auto.value.moshi.AutoValueMoshiAdapterFactory;
 import com.squareup.moshi.Moshi;
+import com.squareup.picasso.Picasso;
 import dagger.Module;
 import dagger.Provides;
 import eu.bquepab.popularmovies.BuildConfig;
@@ -48,6 +51,14 @@ public class ApiModule {
     @Provides
     TmdbService providesTmdbService(final Retrofit retrofit) {
         return retrofit.create(TmdbService.class);
+    }
+
+    @Provides
+    @Singleton
+    Picasso providePicasso(final Context context, final OkHttpClient okHttpClient) {
+        return new Picasso.Builder(context)
+                .downloader(new OkHttp3Downloader(okHttpClient))
+                .build();
     }
 
     private final Converter.Factory provideMoshiConverterFactory() {
