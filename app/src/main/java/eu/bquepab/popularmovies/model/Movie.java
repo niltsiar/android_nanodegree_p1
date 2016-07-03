@@ -24,7 +24,7 @@ public abstract class Movie implements Parcelable {
     @Json(name = "overview")
     public abstract String synopsis();
 
-    @Json(name = "popularity")
+    @Json(name = "vote_average")
     public abstract float userRating();
 
     @Json(name = "release_date")
