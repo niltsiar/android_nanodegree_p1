@@ -1,5 +1,6 @@
 package eu.bquepab.popularmovies.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -25,7 +26,7 @@ import rx.schedulers.Schedulers;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MovieListFragment extends Fragment {
+public class MovieListActivityFragment extends Fragment implements MovieArrayAdapter.OnMovieClickListener {
 
     @Inject
     TmdbService tmdbService;
@@ -35,19 +36,19 @@ public class MovieListFragment extends Fragment {
     int columnsNumber;
     private MovieArrayAdapter movieArrayAdapter;
 
-    public MovieListFragment() {
+    public MovieListActivityFragment() {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+                             final Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.movie_list_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
 
         PopularMoviesApplication.component().inject(this);
         ButterKnife.bind(this, view);
         moviesRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnsNumber));
-        movieArrayAdapter = new MovieArrayAdapter(new ArrayList<Movie>());
+        movieArrayAdapter = new MovieArrayAdapter(new ArrayList<Movie>(), this);
         moviesRecyclerView.setAdapter(movieArrayAdapter);
 
         tmdbService.discoverMovies("popularity.desc", BuildConfig.THE_MOVIE_DATABASE_API_KEY)
@@ -61,5 +62,12 @@ public class MovieListFragment extends Fragment {
                 });
 
         return view;
+    }
+
+    @Override
+    public void onItemClick(final Movie movie) {
+        Intent movieDetailsIntent = new Intent(getActivity(), MovieDetailsActivity.class);
+        movieDetailsIntent.putExtra(MovieDetailsActivity.MOVIE, movie);
+        startActivity(movieDetailsIntent);
     }
 }

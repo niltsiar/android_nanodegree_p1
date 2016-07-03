@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import eu.bquepab.popularmovies.PopularMoviesApplication;
 import eu.bquepab.popularmovies.R;
@@ -20,6 +21,7 @@ public class MovieViewHolder extends RecyclerView.ViewHolder {
     Picasso picasso;
 
     private Movie movie;
+    private MovieArrayAdapter.OnMovieClickListener listener;
 
     public MovieViewHolder(final View itemView) {
         super(itemView);
@@ -27,8 +29,14 @@ public class MovieViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void setMovie(final Movie movie) {
+    public void bind(final Movie movie, final MovieArrayAdapter.OnMovieClickListener listener) {
         this.movie = movie;
+        this.listener = listener;
         picasso.load(movie.posterUrl()).into(moviePoster);
+    }
+
+    @OnClick(R.id.movie_poster)
+    void onClick() {
+        listener.onItemClick(movie);
     }
 }

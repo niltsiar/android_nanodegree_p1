@@ -13,15 +13,17 @@ import java.util.List;
 
 public class MovieArrayAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
-    private static float POSTER_ASPECT_RATION = 1.5f;
+    private static final float POSTER_ASPECT_RATION = 1.5f;
 
     @BindInt(R.integer.grid_columns)
     int columnsNumber;
 
     private List<Movie> movies;
+    private OnMovieClickListener listener;
 
-    public MovieArrayAdapter(final List<Movie> movies) {
+    public MovieArrayAdapter(final List<Movie> movies, final OnMovieClickListener listener) {
         this.movies = new ArrayList<>(movies);
+        this.listener = listener;
     }
 
     @Override
@@ -34,7 +36,7 @@ public class MovieArrayAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
     @Override
     public void onBindViewHolder(final MovieViewHolder holder, final int position) {
-        holder.setMovie(movies.get(position));
+        holder.bind(movies.get(position), listener);
     }
 
     @Override
@@ -45,5 +47,9 @@ public class MovieArrayAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     public void setMovies(final List<Movie> movies) {
         this.movies = new ArrayList<>(movies);
         notifyDataSetChanged();
+    }
+
+    public interface OnMovieClickListener {
+        void onItemClick(Movie movie);
     }
 }
