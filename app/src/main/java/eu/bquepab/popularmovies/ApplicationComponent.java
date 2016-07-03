@@ -26,5 +26,4 @@ public interface ApplicationComponent {
                     .build();
         }
     }
-
 }

@@ -3,7 +3,6 @@ package eu.bquepab.popularmovies.ui;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
@@ -16,8 +15,6 @@ public class MovieViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.movie_poster)
     ImageView moviePoster;
-    @BindView(R.id.movie_title)
-    TextView movieTitle;
 
     @Inject
     Picasso picasso;
@@ -33,6 +30,5 @@ public class MovieViewHolder extends RecyclerView.ViewHolder {
     public void setMovie(final Movie movie) {
         this.movie = movie;
         picasso.load(movie.posterUrl()).into(moviePoster);
-        movieTitle.setText(movie.title());
     }
 }

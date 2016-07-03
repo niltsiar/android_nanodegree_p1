@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import eu.bquepab.popularmovies.BuildConfig;
@@ -30,6 +31,8 @@ public class MovieListFragment extends Fragment {
     TmdbService tmdbService;
     @BindView(R.id.movies_grid)
     RecyclerView moviesRecyclerView;
+    @BindInt(R.integer.grid_columns)
+    int columnsNumber;
     private MovieArrayAdapter movieArrayAdapter;
 
     public MovieListFragment() {
@@ -43,7 +46,7 @@ public class MovieListFragment extends Fragment {
 
         PopularMoviesApplication.component().inject(this);
         ButterKnife.bind(this, view);
-        moviesRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        moviesRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnsNumber));
         movieArrayAdapter = new MovieArrayAdapter(new ArrayList<Movie>());
         moviesRecyclerView.setAdapter(movieArrayAdapter);
 
