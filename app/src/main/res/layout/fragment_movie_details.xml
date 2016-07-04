@@ -7,18 +7,21 @@
   android:paddingLeft="@dimen/activity_horizontal_margin"
   android:paddingRight="@dimen/activity_horizontal_margin"
   android:paddingTop="@dimen/activity_vertical_margin"
-  tools:context="eu.bquepab.popularmovies.ui.MovieDetailsActivityFragment"
+  tools:context=".ui.MovieDetailsActivityFragment"
   tools:showIn="@layout/activity_movie_details">
 
   <ImageView
     android:id="@+id/movie_poster"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:maxHeight="200dp"
-    android:maxWidth="100dp"
-    android:minHeight="150dp"
-    android:minWidth="75dp"
-    android:scaleType="fitXY"
+    android:layout_marginBottom="@dimen/movie_details_poster_bottom_margin"
+    android:layout_marginEnd="@dimen/movie_details_poster_right_margin"
+    android:layout_marginRight="@dimen/movie_details_poster_right_margin"
+    android:maxHeight="@dimen/movie_details_poster_max_height"
+    android:maxWidth="@dimen/movie_details_poster_max_width"
+    android:minHeight="@dimen/movie_details_poster_min_height"
+    android:minWidth="@dimen/movie_details_poster_min_width"
+    android:scaleType="fitCenter"
     tools:src="@mipmap/ic_launcher" />
 
   <TextView
@@ -27,6 +30,7 @@
     android:layout_height="wrap_content"
     android:layout_toEndOf="@id/movie_poster"
     android:layout_toRightOf="@id/movie_poster"
+    android:textAppearance="?android:attr/textAppearanceLarge"
     tools:text="Test title" />
 
   <TextView

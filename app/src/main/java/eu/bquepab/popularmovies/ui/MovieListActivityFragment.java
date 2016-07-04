@@ -2,6 +2,8 @@ package eu.bquepab.popularmovies.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.BindInt;
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import eu.bquepab.popularmovies.BuildConfig;
@@ -28,15 +31,23 @@ import rx.schedulers.Schedulers;
  */
 public class MovieListActivityFragment extends Fragment implements MovieArrayAdapter.OnMovieClickListener {
 
+    private static final String EXTRA_MOVIES = "movies";
+
     @Inject
     TmdbService tmdbService;
     @BindView(R.id.movies_grid)
     RecyclerView moviesRecyclerView;
     @BindInt(R.integer.grid_columns)
     int columnsNumber;
+    @BindString(R.string.pref_sort_order_key)
+    String prefSortOrder;
+    @BindString(R.string.pref_sort_order_popularity_value)
+    String prefSortOrderDefault;
     private MovieArrayAdapter movieArrayAdapter;
+    private ArrayList<Movie> movies;
 
     public MovieListActivityFragment() {
+        movies = new ArrayList<>();
     }
 
     @Override
@@ -47,21 +58,49 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
 
         PopularMoviesApplication.component().inject(this);
         ButterKnife.bind(this, view);
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(final View view, final @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         moviesRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnsNumber));
-        movieArrayAdapter = new MovieArrayAdapter(new ArrayList<Movie>(), this);
+        movieArrayAdapter = new MovieArrayAdapter(movies, this);
         moviesRecyclerView.setAdapter(movieArrayAdapter);
 
-        tmdbService.discoverMovies("popularity.desc", BuildConfig.THE_MOVIE_DATABASE_API_KEY)
+        if (null != savedInstanceState) {
+            movies = savedInstanceState.getParcelableArrayList(EXTRA_MOVIES);
+            movieArrayAdapter.setMovies(movies);
+        } else {
+            refreshMovies();
+        }
+    }
+
+    private void refreshMovies() {
+        String prefSortBy = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(prefSortOrder, prefSortOrderDefault);
+        String sortBy = TmdbService.SORT_BY_POPULARITY;
+        if (prefSortBy != prefSortOrderDefault) {
+            sortBy = TmdbService.SORT_BY_TOP_RATED;
+        }
+        tmdbService.discoverMovies(sortBy, BuildConfig.THE_MOVIE_DATABASE_API_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<DiscoverResponse>() {
                     @Override
-                    public void call(DiscoverResponse discoverResponse) {
-                        movieArrayAdapter.setMovies(discoverResponse.results());
+                    public void call(final DiscoverResponse discoverResponse) {
+                        movies = new ArrayList<>(discoverResponse.results());
+                        movieArrayAdapter.setMovies(movies);
                     }
                 });
+    }
 
-        return view;
+    @Override
+    public void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (null != movies && !movies.isEmpty()) {
+            outState.putParcelableArrayList(EXTRA_MOVIES, movies);
+        }
     }
 
     @Override
