@@ -28,7 +28,7 @@ public class MovieArrayAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
     @Override
     public MovieViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_item, parent, false);
+        final View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_item, parent, false);
         ButterKnife.bind(this, itemView);
         itemView.getLayoutParams().height = (int) (parent.getWidth() / columnsNumber * POSTER_ASPECT_RATION);
         return new MovieViewHolder(itemView);

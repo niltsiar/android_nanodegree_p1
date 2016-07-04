@@ -31,8 +31,10 @@ public class MovieDetailsActivityFragment extends Fragment {
     TextView movieUserRating;
     @BindView(R.id.movie_synopsis)
     TextView movieSynopsis;
+
     @Inject
     Picasso picasso;
+
     private Movie movie;
 
     public MovieDetailsActivityFragment() {
@@ -41,7 +43,7 @@ public class MovieDetailsActivityFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_movie_details, container, false);
+        final View view = inflater.inflate(R.layout.fragment_movie_details, container, false);
         PopularMoviesApplication.component().inject(this);
         ButterKnife.bind(this, view);
         movie = getActivity().getIntent().getParcelableExtra(MovieDetailsActivity.MOVIE);

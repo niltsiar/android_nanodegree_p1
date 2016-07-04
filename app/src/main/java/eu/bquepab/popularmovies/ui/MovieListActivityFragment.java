@@ -32,9 +32,11 @@ import rx.schedulers.Schedulers;
 public class MovieListActivityFragment extends Fragment implements MovieArrayAdapter.OnMovieClickListener {
 
     private static final String EXTRA_MOVIES = "movies";
+    private static final String EXTRA_LAST_SORT = "last_sort_by";
 
     @Inject
     TmdbService tmdbService;
+
     @BindView(R.id.movies_grid)
     RecyclerView moviesRecyclerView;
     @BindInt(R.integer.grid_columns)
@@ -42,9 +44,13 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
     @BindString(R.string.pref_sort_order_key)
     String prefSortOrder;
     @BindString(R.string.pref_sort_order_popularity_value)
-    String prefSortOrderDefault;
+    String prefSortOrderByPopularity;
+    @BindString(R.string.pref_sort_order_top_rated_value)
+    String prefSortOrderByTopRated;
+
     private MovieArrayAdapter movieArrayAdapter;
     private ArrayList<Movie> movies;
+    private String lastSortBy;
 
     public MovieListActivityFragment() {
         movies = new ArrayList<>();
@@ -72,17 +78,37 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
         if (null != savedInstanceState) {
             movies = savedInstanceState.getParcelableArrayList(EXTRA_MOVIES);
             movieArrayAdapter.setMovies(movies);
+            lastSortBy = savedInstanceState.getString(EXTRA_LAST_SORT);
         } else {
-            refreshMovies();
+            lastSortBy = getSortByFromSettings();
+            refreshMovies(lastSortBy);
         }
     }
 
-    private void refreshMovies() {
-        String prefSortBy = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(prefSortOrder, prefSortOrderDefault);
-        String sortBy = TmdbService.SORT_BY_POPULARITY;
-        if (prefSortBy != prefSortOrderDefault) {
-            sortBy = TmdbService.SORT_BY_TOP_RATED;
+    @Override
+    public void onResume() {
+        super.onResume();
+        final String sortByFromSettings = getSortByFromSettings();
+        if (!sortByFromSettings.equals(lastSortBy)) {
+            lastSortBy = sortByFromSettings;
+            refreshMovies(lastSortBy);
         }
+    }
+
+    private String getSortByFromSettings() {
+        final String prefSortBy = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(prefSortOrder, prefSortOrderByPopularity);
+        String sortBy;
+        if (prefSortBy.equals(prefSortOrderByPopularity)) {
+            sortBy = TmdbService.SORT_BY_POPULARITY;
+        } else if (prefSortBy.equals(prefSortOrderByTopRated)) {
+            sortBy = TmdbService.SORT_BY_TOP_RATED;
+        } else {
+            sortBy = TmdbService.SORT_BY_POPULARITY;
+        }
+        return sortBy;
+    }
+
+    private void refreshMovies(final String sortBy) {
         tmdbService.discoverMovies(sortBy, BuildConfig.THE_MOVIE_DATABASE_API_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -100,6 +126,7 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
         super.onSaveInstanceState(outState);
         if (null != movies && !movies.isEmpty()) {
             outState.putParcelableArrayList(EXTRA_MOVIES, movies);
+            outState.putString(EXTRA_LAST_SORT, lastSortBy);
         }
     }
 
