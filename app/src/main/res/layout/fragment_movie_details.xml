@@ -1,0 +1,81 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:paddingBottom="@dimen/activity_vertical_margin"
+  android:paddingLeft="@dimen/activity_horizontal_margin"
+  android:paddingRight="@dimen/activity_horizontal_margin"
+  android:paddingTop="@dimen/activity_vertical_margin"
+  tools:context=".ui.MovieDetailsActivityFragment"
+  tools:showIn="@layout/activity_movie_details">
+
+  <ImageView
+    android:id="@+id/movie_poster"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/movie_details_poster_bottom_margin"
+    android:layout_marginEnd="@dimen/movie_details_poster_right_margin"
+    android:layout_marginRight="@dimen/movie_details_poster_right_margin"
+    android:maxHeight="@dimen/movie_details_poster_max_height"
+    android:maxWidth="@dimen/movie_details_poster_max_width"
+    android:minHeight="@dimen/movie_details_poster_min_height"
+    android:minWidth="@dimen/movie_details_poster_min_width"
+    android:scaleType="fitCenter"
+    tools:src="@mipmap/ic_launcher" />
+
+  <TextView
+    android:id="@+id/movie_title"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_toEndOf="@id/movie_poster"
+    android:layout_toRightOf="@id/movie_poster"
+    android:textAppearance="?android:attr/textAppearanceLarge"
+    tools:text="Test title" />
+
+  <TextView
+    android:id="@+id/movie_release_date"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignLeft="@id/movie_title"
+    android:layout_alignStart="@id/movie_title"
+    android:layout_below="@id/movie_title"
+    tools:text="yyyy/mm/dd" />
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignLeft="@id/movie_title"
+    android:layout_alignStart="@id/movie_title"
+    android:layout_below="@id/movie_release_date"
+    android:orientation="horizontal">
+
+    <ImageView
+      android:id="@+id/star_icon"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:tint="@color/colorAccent"
+      app:srcCompat="@drawable/ic_star_black_24dp" />
+
+    <TextView
+      android:id="@+id/movie_user_rating"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_vertical"
+      tools:text="10.0" />
+  </LinearLayout>
+
+  <ScrollView
+    android:id="@+id/movie_synapsis_scrollable_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/movie_poster">
+
+    <TextView
+      android:id="@+id/movie_synopsis"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi a nisl ac massa aliquet posuere. Sed vel nulla ut orci aliquam convallis. Proin sit amet malesuada elit. Duis pulvinar arcu euismod, faucibus risus vel, dignissim nulla. Praesent non velit fermentum sem interdum feugiat quis in diam. Vivamus eget orci interdum, sagittis neque a, luctus dolor. Phasellus porttitor tincidunt nisi eget dapibus. Aenean in velit sit amet est vestibulum tincidunt sit amet at ipsum. Integer ornare nulla at justo porttitor, vel elementum augue vehicula. Curabitur vehicula a est efficitur interdum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus consectetur lacinia neque, sed pretium ipsum dignissim eu.\nIn vitae velit sed tellus varius mollis vel fermentum urna. Integer rhoncus molestie orci et pulvinar. Phasellus faucibus volutpat justo, sodales consequat augue fermentum vitae. Nulla auctor lectus eget gravida scelerisque. Integer mollis semper ligula, quis eleifend ligula finibus vel. Morbi blandit leo ac velit dapibus convallis. Aenean rhoncus, eros vel gravida volutpat, lectus massa interdum dolor, ut eleifend orci velit aliquet magna. Nam felis orci, scelerisque nec finibus non, faucibus et felis.\nNam dictum lacus vel enim porttitor finibus. Donec tincidunt mauris orci, sed maximus quam tristique nec. Nunc condimentum vulputate faucibus. Maecenas et massa id urna porta viverra. Pellentesque quis tortor in ipsum egestas laoreet. Vestibulum id urna sit amet dui blandit aliquam ut ac lacus. Mauris quis pellentesque massa, in elementum enim. Nullam eu sem sollicitudin mi elementum laoreet. Cras porttitor tincidunt tincidunt. Praesent ac tincidunt purus.\nNam eu elit eget turpis vulputate ornare et mattis justo. Cras lacinia convallis diam et rutrum. Cras ut felis sapien. Vivamus eros nisi, sagittis quis dictum quis, porttitor non magna. Quisque eget purus quis mi condimentum convallis ac vitae lorem. Integer pretium pellentesque dolor. Nam egestas, eros ac sagittis gravida, turpis tellus facilisis tortor, a maximus nisl turpis in felis. Quisque vulputate felis venenatis leo consequat, eget tristique lorem malesuada. Vestibulum nec leo lectus. Mauris arcu nisi, suscipit ac feugiat vel, ultrices ac ex. Praesent in nisi finibus lectus blandit mattis.\nCurabitur laoreet mollis felis et pellentesque. Vivamus a metus nisl. Maecenas pellentesque lacus nisl, sit amet faucibus mauris sagittis a. In porta pulvinar libero et efficitur. Donec vel nulla at augue mattis luctus in eu risus. Donec gravida leo quis viverra mattis. Etiam cursus urna eu nibh blandit, at sodales turpis suscipit. Nullam varius urna in nisi posuere, sed gravida nulla bibendum. Nullam efficitur orci at vehicula molestie." />
+  </ScrollView>
+
+</RelativeLayout>
