@@ -1,0 +1,159 @@
+import org.ajoberstar.grgit.Grgit
+import org.eclipse.jgit.errors.RepositoryNotFoundException
+
+buildscript {
+    ext.versions = [
+            apt                      : '1.8',
+            gradle_git               : '1.5.0',
+            gradle_versions          : '0.12.0',
+            dexcount                 : '0.5.4',
+            retrolambda              : '2.3.0',
+            retrolambda_gradle_plugin: '3.2.5',
+
+            support                  : '24.0.0',
+            junit                    : '4.12',
+            dagger                   : '2.5',
+            butterknife              : '8.1.0',
+            rxjava                   : '1.1.6',
+            rxandroid                : '1.2.1',
+            timber                   : '4.1.2',
+            retrofit                 : '2.1.0',
+            okhttp                   : '3.3.1',
+            picasso                  : '2.5.2',
+            picasso2_okhttp3         : '1.0.2',
+            auto_value               : '1.2',
+            auto_value_moshi         : '0.3.2',
+            auto_value_parcel        : '0.2.2',
+    ]
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "com.neenbedankt.gradle.plugins:android-apt:${versions.apt}"
+        classpath "org.ajoberstar:gradle-git:${versions.gradle_git}"
+        classpath "com.github.ben-manes:gradle-versions-plugin:${versions.gradle_versions}"
+        classpath "com.getkeepsafe.dexcount:dexcount-gradle-plugin:${versions.dexcount}"
+        classpath "me.tatarka:gradle-retrolambda:${versions.retrolambda_gradle_plugin}"
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'com.github.ben-manes.versions'
+apply plugin: 'com.getkeepsafe.dexcount'
+apply plugin: 'me.tatarka.retrolambda'
+
+//Version information
+def versionMajor = 0
+def versionMinor = 1
+def versionPatch = 0
+def versionRevision = getRevision();
+
+def appVersionCode = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100
+def appVersionName = "${versionMajor}.${versionMinor}.${versionPatch}"
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.0"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    defaultConfig {
+        applicationId "eu.bquepab.popularmovies"
+        minSdkVersion 15
+        targetSdkVersion 24
+        versionCode appVersionCode
+        versionName appVersionName
+
+        vectorDrawables.useSupportLibrary = true
+
+        buildConfigField "String", "THE_MOVIE_DATABASE_API_KEY", THE_MOVIE_DATABASE_API_KEY
+        buildConfigField "String", "THE_MOVE_DATABASE_API_URL", '"https://api.themoviedb.org/3/"'
+        buildConfigField "String", "THE_MOVIE_DATABASE_IMAGE_URL", '"http://image.tmdb.org/t/p/w185"'
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile "com.android.support:appcompat-v7:${versions.support}"
+    compile "com.android.support:design:${versions.support}"
+    compile "com.android.support:recyclerview-v7:${versions.support}"
+
+    compile "com.google.dagger:dagger:${versions.dagger}"
+
+    compile "com.jakewharton:butterknife:${versions.butterknife}"
+    compile "com.jakewharton.timber:timber:${versions.timber}"
+    compile "com.jakewharton.picasso:picasso2-okhttp3-downloader:${versions.picasso2_okhttp3}"
+
+    compile("com.squareup.retrofit2:retrofit:${versions.retrofit}") {
+        exclude module: 'okhttp'
+    }
+    compile "com.squareup.retrofit2:converter-moshi:${versions.retrofit}"
+    compile "com.squareup.retrofit2:adapter-rxjava:${versions.retrofit}"
+    compile "com.squareup.picasso:picasso:${versions.picasso}"
+    compile "com.squareup.okhttp3:okhttp:${versions.okhttp}"
+    compile "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
+
+    compile "io.reactivex:rxjava:${versions.rxjava}"
+    compile "io.reactivex:rxandroid:${versions.rxandroid}"
+
+    testCompile "junit:junit:${versions.junit}"
+
+    provided "com.google.auto.value:auto-value:${versions.auto_value}"
+
+    apt "com.google.dagger:dagger-compiler:${versions.dagger}"
+    apt "com.google.auto.value:auto-value:${versions.auto_value}"
+    apt "com.ryanharter.auto.value:auto-value-moshi:${versions.auto_value_moshi}"
+    apt "com.ryanharter.auto.value:auto-value-parcel:${versions.auto_value_parcel}"
+    apt "com.jakewharton:butterknife-compiler:${versions.butterknife}"
+
+    retrolambdaConfig "net.orfjackal.retrolambda:retrolambda:${versions.retrolambda}"
+}
+
+android.applicationVariants.all { variant ->
+    if (variant.buildType.name == "debug") {
+        variant.mergedFlavor.versionName += "-${versionRevision}"
+    }
+}
+
+def getRevision() {
+    def revision
+    try {
+        revision = getGitRevision()
+    } catch (RepositoryNotFoundException e) {
+        revision = 0
+    }
+    return revision
+}
+
+def getGitRevision() {
+    def git = Grgit.open(dir: '.')
+    return git.head().abbreviatedId
+}
+
+//Configuration for gradle-versions-plugin to avoid non-release versions
+//to run: gradlew dependencyUpdates
+dependencyUpdates.resolutionStrategy = {
+    componentSelection { rules ->
+        rules.all { ComponentSelection selection ->
+            boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier ->
+                selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
+            }
+            if (rejected) {
+                selection.reject('Release candidate')
+            }
+        }
+    }
+}
