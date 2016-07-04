@@ -3,25 +3,27 @@ import org.eclipse.jgit.errors.RepositoryNotFoundException
 
 buildscript {
     ext.versions = [
-            apt              : '1.8',
-            gradle_git       : '1.5.0',
-            gradle_versions  : '0.12.0',
-            dexcount         : '0.5.4',
+            apt                      : '1.8',
+            gradle_git               : '1.5.0',
+            gradle_versions          : '0.12.0',
+            dexcount                 : '0.5.4',
+            retrolambda              : '2.3.0',
+            retrolambda_gradle_plugin: '3.2.5',
 
-            support          : '24.0.0',
-            junit            : '4.12',
-            dagger           : '2.5',
-            butterknife      : '8.1.0',
-            rxjava           : '1.1.6',
-            rxandroid        : '1.2.1',
-            timber           : '4.1.2',
-            retrofit         : '2.1.0',
-            okhttp           : '3.3.1',
-            picasso          : '2.5.2',
-            picasso2_okhttp3 : '1.0.2',
-            auto_value       : '1.2',
-            auto_value_moshi : '0.3.2',
-            auto_value_parcel: '0.2.2',
+            support                  : '24.0.0',
+            junit                    : '4.12',
+            dagger                   : '2.5',
+            butterknife              : '8.1.0',
+            rxjava                   : '1.1.6',
+            rxandroid                : '1.2.1',
+            timber                   : '4.1.2',
+            retrofit                 : '2.1.0',
+            okhttp                   : '3.3.1',
+            picasso                  : '2.5.2',
+            picasso2_okhttp3         : '1.0.2',
+            auto_value               : '1.2',
+            auto_value_moshi         : '0.3.2',
+            auto_value_parcel        : '0.2.2',
     ]
     repositories {
         jcenter()
@@ -31,6 +33,7 @@ buildscript {
         classpath "org.ajoberstar:gradle-git:${versions.gradle_git}"
         classpath "com.github.ben-manes:gradle-versions-plugin:${versions.gradle_versions}"
         classpath "com.getkeepsafe.dexcount:dexcount-gradle-plugin:${versions.dexcount}"
+        classpath "me.tatarka:gradle-retrolambda:${versions.retrolambda_gradle_plugin}"
     }
 }
 
@@ -38,6 +41,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'com.getkeepsafe.dexcount'
+apply plugin: 'me.tatarka.retrolambda'
 
 //Version information
 def versionMajor = 0
@@ -52,6 +56,10 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.0"
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     defaultConfig {
         applicationId "eu.bquepab.popularmovies"
         minSdkVersion 15
@@ -110,6 +118,8 @@ dependencies {
     apt "com.ryanharter.auto.value:auto-value-moshi:${versions.auto_value_moshi}"
     apt "com.ryanharter.auto.value:auto-value-parcel:${versions.auto_value_parcel}"
     apt "com.jakewharton:butterknife-compiler:${versions.butterknife}"
+
+    retrolambdaConfig "net.orfjackal.retrolambda:retrolambda:${versions.retrolambda}"
 }
 
 android.applicationVariants.all { variant ->

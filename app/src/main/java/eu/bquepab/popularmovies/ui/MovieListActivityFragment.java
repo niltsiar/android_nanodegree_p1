@@ -17,13 +17,11 @@ import butterknife.ButterKnife;
 import eu.bquepab.popularmovies.BuildConfig;
 import eu.bquepab.popularmovies.PopularMoviesApplication;
 import eu.bquepab.popularmovies.R;
-import eu.bquepab.popularmovies.api.DiscoverResponse;
 import eu.bquepab.popularmovies.api.TmdbService;
 import eu.bquepab.popularmovies.model.Movie;
 import java.util.ArrayList;
 import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -112,12 +110,9 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
         tmdbService.discoverMovies(sortBy, BuildConfig.THE_MOVIE_DATABASE_API_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<DiscoverResponse>() {
-                    @Override
-                    public void call(final DiscoverResponse discoverResponse) {
-                        movies = new ArrayList<>(discoverResponse.results());
-                        movieArrayAdapter.setMovies(movies);
-                    }
+                .subscribe(discoverResponse -> {
+                    movies = new ArrayList<>(discoverResponse.results());
+                    movieArrayAdapter.setMovies(movies);
                 });
     }
 
