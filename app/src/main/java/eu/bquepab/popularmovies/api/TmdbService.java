@@ -6,9 +6,9 @@ import rx.Observable;
 
 public interface TmdbService {
 
-    String SORT_BY_POPULARITY = "popularity.desc";
-    String SORT_BY_TOP_RATED = "vote_count.desc";
+    @GET("movie/popular")
+    Observable<DiscoverResponse> getPopularMovies(@Query("api_key") String apiKey);
 
-    @GET("discover/movie")
-    Observable<DiscoverResponse> discoverMovies(@Query("sort_by") String sort, @Query("api_key") String apiKey);
+    @GET("movie/top_rated")
+    Observable<DiscoverResponse> getTopRatedMovies(@Query("api_key") String apiKey);
 }

@@ -17,10 +17,12 @@ import butterknife.ButterKnife;
 import eu.bquepab.popularmovies.BuildConfig;
 import eu.bquepab.popularmovies.PopularMoviesApplication;
 import eu.bquepab.popularmovies.R;
+import eu.bquepab.popularmovies.api.DiscoverResponse;
 import eu.bquepab.popularmovies.api.TmdbService;
 import eu.bquepab.popularmovies.model.Movie;
 import java.util.ArrayList;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -58,7 +60,7 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
+        final View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
 
         PopularMoviesApplication.component().inject(this);
         ButterKnife.bind(this, view);
@@ -94,21 +96,17 @@ public class MovieListActivityFragment extends Fragment implements MovieArrayAda
     }
 
     private String getSortByFromSettings() {
-        final String prefSortBy = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(prefSortOrder, prefSortOrderByPopularity);
-        String sortBy;
-        if (prefSortBy.equals(prefSortOrderByPopularity)) {
-            sortBy = TmdbService.SORT_BY_POPULARITY;
-        } else if (prefSortBy.equals(prefSortOrderByTopRated)) {
-            sortBy = TmdbService.SORT_BY_TOP_RATED;
-        } else {
-            sortBy = TmdbService.SORT_BY_POPULARITY;
-        }
-        return sortBy;
+        return PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(prefSortOrder, prefSortOrderByPopularity);
     }
 
     private void refreshMovies(final String sortBy) {
-        tmdbService.discoverMovies(sortBy, BuildConfig.THE_MOVIE_DATABASE_API_KEY)
-                .subscribeOn(Schedulers.io())
+        Observable<DiscoverResponse> responseObservable;
+        if (prefSortOrderByTopRated.equals(sortBy)) {
+            responseObservable = tmdbService.getTopRatedMovies(BuildConfig.THE_MOVIE_DATABASE_API_KEY);
+        } else {
+            responseObservable = tmdbService.getPopularMovies(BuildConfig.THE_MOVIE_DATABASE_API_KEY);
+        }
+        responseObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(discoverResponse -> {
                     movies = new ArrayList<>(discoverResponse.results());
