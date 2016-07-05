@@ -1,6 +1,8 @@
 package eu.bquepab.popularmovies.model;
 
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import com.google.auto.value.AutoValue;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
@@ -19,6 +21,7 @@ public abstract class Movie implements Parcelable {
     public abstract String title();
 
     @Json(name = "poster_path")
+    @Nullable
     public abstract String posterPath();
 
     @Json(name = "overview")
@@ -31,6 +34,10 @@ public abstract class Movie implements Parcelable {
     public abstract String releaseDate();
 
     public String posterUrl() {
-        return BuildConfig.THE_MOVIE_DATABASE_IMAGE_URL + posterPath();
+        if (!TextUtils.isEmpty(posterPath())) {
+            return BuildConfig.THE_MOVIE_DATABASE_IMAGE_URL + posterPath();
+        } else {
+            return BuildConfig.THE_MOVIE_DATABASE_NO_POSTER_IMAGE_URL;
+        }
     }
 }
