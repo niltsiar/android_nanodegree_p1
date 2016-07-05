@@ -46,7 +46,7 @@ apply plugin: 'me.tatarka.retrolambda'
 //Version information
 def versionMajor = 0
 def versionMinor = 1
-def versionPatch = 0
+def versionPatch = 1
 def versionRevision = getRevision();
 
 def appVersionCode = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100
@@ -72,6 +72,7 @@ android {
         buildConfigField "String", "THE_MOVIE_DATABASE_API_KEY", THE_MOVIE_DATABASE_API_KEY
         buildConfigField "String", "THE_MOVE_DATABASE_API_URL", '"https://api.themoviedb.org/3/"'
         buildConfigField "String", "THE_MOVIE_DATABASE_IMAGE_URL", '"http://image.tmdb.org/t/p/w185"'
+        buildConfigField "String", "THE_MOVIE_DATABASE_NO_POSTER_IMAGE_URL", '"https://assets.tmdb.org/assets/7f29bd8b3370c71dd379b0e8b570887c/images/no-poster-w185-v2.png"'
     }
     buildTypes {
         release {
