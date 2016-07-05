@@ -46,7 +46,7 @@ apply plugin: 'me.tatarka.retrolambda'
 //Version information
 def versionMajor = 0
 def versionMinor = 1
-def versionPatch = 0
+def versionPatch = 1
 def versionRevision = getRevision();
 
 def appVersionCode = versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100
